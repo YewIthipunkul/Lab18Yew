@@ -22,7 +22,7 @@ struct course{
 	vector<student *> student_list;
 };
 
-student * findstudent(vector<student>& allstudents, const int& key){ //There is something wrong in this line.
+student *findstudent(vector<student>& allstudents, const int& key){ //There is something wrong in this line.
 	for(unsigned int i = 0; i < allstudents.size(); i++){
 		if(allstudents[i].id  == key) return &allstudents[i];
 	}
@@ -56,19 +56,22 @@ void printreport(vector<course> allcourses){
 }
 
 int main(){
-	ifstream student_file("D:\\Code\\Saved_Code\\Lab18Yew\\students.txt");
-	ifstream course_file("D:\\Code\\Saved_Code\\Lab18Yew\\courses.txt");
+	ifstream student_file("students.txt");
+	ifstream course_file("courses.txt");
 	vector<student> allstudents;
 	vector<course> allcourses;
 	
 	string textline;
 	
 	while(getline(student_file,textline)){
-		
-		//Use sscanf() to split the values in textline and assign those values to the members of struct s;
         student s;
-        sscanf(textline.c_str()	, "%s %c %d %lf", s.name, &s.gender, &s.id, &s.gpa);
-        allstudents.push_back(s);
+		
+		char name[100];
+		int items = sscanf(textline.c_str(), "%[^,], %d, %c, %lf", name, &s.id, &s.gender, &s.gpa);
+		if(items == 4) {  
+			s.name = name;
+			allstudents.push_back(s);
+		}
 	}
 	
 	int state = 1;
@@ -97,7 +100,9 @@ int main(){
 				student *p = findstudent(allstudents,atof(textline.c_str()));
 				
 				//Append (push_back) p to student_list of the recently added course in allcourses[];
+				if (p != nullptr){
 				allcourses.back().student_list.push_back(p);
+				}
 			}
 		}
 	}
